@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Form from './Form/Form'
 import Cart from './Summary/Cart'
+import Summary from './Summary/Summary/Summary'
+import Features from './Features/Features'
 
 // Normalizes string as a slug - a string that is safe to use
 // in both URLs and html attributes
@@ -51,19 +53,7 @@ class App extends Component {
       const options = this.props.features[feature].map(item => {
         const itemHash = slugify(JSON.stringify(item));
         return (
-          <div key={itemHash} className="feature__item">
-            <input
-              type="radio"
-              id={itemHash}
-              className="feature__option"
-              name={slugify(feature)}
-              checked={item.name === this.state.selected[feature].name}
-              onChange={e => this.updateFeature(feature, item)}
-            />
-            <label htmlFor={itemHash} className="feature__label">
-              {item.name} ({USCurrencyFormat.format(item.cost)})
-            </label>
-          </div>
+          <Features itemHash = {itemHash} feature = {feature} USCurrencyFormat = {USCurrencyFormat} item = {item} state = {this.state} />
         );
       });
 
@@ -80,6 +70,10 @@ class App extends Component {
     const summary = Object.keys(this.state.selected).map((feature, idx) => {
       const featureHash = feature + '-' + idx;
       const selectedOption = this.state.selected[feature];
+
+      return (
+        <Summary feature = {feature} featureHash = {featureHash} selectedOption = {selectedOption} USCurrencyFormat = {USCurrencyFormat} />
+      );
     });
 
     const total = Object.keys(this.state.selected).reduce(
@@ -94,7 +88,7 @@ class App extends Component {
         </header>
         <main>
           <Form features = {features}/>
-          <Cart USCurrencyFormat = {USCurrencyFormat} summary = {summary} total = {total} selectedOption = {selectedOption} />
+          <Cart USCurrencyFormat = {USCurrencyFormat} total = {total} summary = {summary} />
         </main>
       </div>
     );
